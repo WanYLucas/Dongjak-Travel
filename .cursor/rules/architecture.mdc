@@ -1,0 +1,72 @@
+---
+alwaysApply: true
+description: Project architecture, runtime, directories, environment, and AI integration rules
+---
+
+# 🏗️ Architecture Rules
+
+## Overview
+- Frontend-only SPA built with React 19 + Vite 6 + TypeScript 5.8.
+- AI integration via `@google/genai` SDK. All calls happen client-side.
+- Core flow: Language → Quiz → Loading → Results (state-driven in [App.tsx](mdc:App.tsx)).
+
+## Entry Points & Key Files
+- HTML bootstrap: [index.html](mdc:index.html)
+- App mount: [index.tsx](mdc:index.tsx)
+- App shell & state machine: [App.tsx](mdc:App.tsx)
+- AI service (Gemini): [services/geminiService.ts](mdc:services/geminiService.ts)
+- Domain constants (i18n, itinerary, map, dataset): [constants.ts](mdc:constants.ts)
+- Shared types: [types.ts](mdc:types.ts)
+- Vite config (env injection, alias): [vite.config.ts](mdc:vite.config.ts)
+
+## Runtime & Build
+- Dev: `npm run dev` (Vite dev server)
+- Build: `npm run build` → static assets
+- Preview: `npm run preview`
+- Module alias: `@` → project root (see [tsconfig.json](mdc:tsconfig.json) and [vite.config.ts](mdc:vite.config.ts))
+
+## Environment Variables 🔐
+- Create `.env.local` with `GEMINI_API_KEY=...`
+- Vite injects at build time as `process.env.API_KEY` and `process.env.GEMINI_API_KEY` via `define` in [vite.config.ts](mdc:vite.config.ts).
+- Important: Build-time define inlines values. For production, prefer a backend proxy to keep secrets server-side.
+
+## State & Data Flow
+- App state machine in [App.tsx](mdc:App.tsx): `language` → `quiz` → `loading` → `results`.
+- Quiz answers passed to AI service; recommendations keyed by day.
+- Base itinerary (3 days) and i18n strings live in [constants.ts](mdc:constants.ts).
+
+## AI Integration 🤖
+- All AI calls go through [services/geminiService.ts](mdc:services/geminiService.ts).
+  - Model: `gemini-2.5-flash`.
+  - Response constrained by JSON schema (typed recommendations).
+  - Per-day generation is parallelized with `Promise.allSettled`.
+  - On failure, fall back to base itinerary and show localized error text.
+- If introducing new AI features:
+  - Keep prompts in service layer.
+  - Define and validate explicit response schemas.
+  - Provide graceful UI fallbacks.
+
+## Map & Geometry 🗺️
+- The Dongjak SVG map is embedded in [components/ItineraryDisplay.tsx](mdc:components/ItineraryDisplay.tsx).
+- Logical point registry: `DONGJAK_LOCATIONS` in [constants.ts](mdc:constants.ts). Points are scaled and mapped to the SVG viewBox (800×600). Keep additions consistent with existing scaling.
+
+## Internationalization 🌍
+- Language strings live in `LANGUAGES` within [constants.ts](mdc:constants.ts).
+- Access localized fields via `getText(field)` helpers. Default fallback to English (`en`) if the current language is missing.
+- When adding UI copy, extend `LANGUAGES` entries accordingly.
+
+## Styling System 🎨
+- Tailwind via CDN in [index.html](mdc:index.html).
+- Component-scoped keyframe animations defined inline with `<style>` blocks.
+- If promoting shared styles, add a global stylesheet and import it in `index.html` (keep global CSS minimal).
+
+## Accessibility & UX ♿
+- Use `aria-label`, focus rings, and keyboard interactions (e.g., ESC to close modals) as in [components/LocationModal.tsx](mdc:components/LocationModal.tsx).
+- Maintain responsive layouts using Tailwind breakpoints (`sm`, `md`, etc.).
+
+## Security & Production Guidance 🚧
+- Do not ship long-lived API keys to clients. For production:
+  - Move Gemini calls to a serverless function or backend.
+  - Add rate limiting/authentication as needed.
+  - Keep the client-side signature (request/response types) unchanged if possible.
+

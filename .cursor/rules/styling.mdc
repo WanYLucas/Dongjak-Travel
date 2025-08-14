@@ -1,0 +1,45 @@
+---
+alwaysApply: true
+description: Styling rules for Tailwind usage, animations, responsiveness, and assets
+globs: *.ts,*.tsx,*.css,*.html
+---
+
+# 🎨 Styling Rules
+
+## Tailwind Usage
+- Tailwind is loaded via CDN in [index.html](mdc:index.html). Prefer utility classes for layout, spacing, and typography.
+- Keep custom CSS minimal. If a style is reusable across components, consider moving it to a global stylesheet (imported from `index.html`).
+- Do not inline large style blocks when a combination of utilities can express the same.
+
+## Animations ✨
+- Component-level keyframes can be defined in local `<style>` tags (see [components/ItineraryDisplay.tsx](mdc:components/ItineraryDisplay.tsx)).
+- Name keyframes descriptively: `fade-in`, `slide-in`, `pop-in`, etc.
+- Keep durations <= 700ms for snappy UX; ensure `prefers-reduced-motion` graceful degradation when adding complex animations.
+
+## Responsiveness 📱
+- Use Tailwind breakpoints: `sm`, `md`, `lg` for grids, text sizes, and paddings.
+- Ensure tap targets are at least 44×44px on mobile.
+- Avoid horizontal scrolling; test layouts for `min-h-screen` scenarios.
+
+## Colors & Theme 🌈
+- Prefer Tailwind palette (`gray-`, `indigo-`, `purple-`, `blue-`) for consistency.
+- Maintain accessible color contrast for text and interactive states.
+
+## Components & Layout
+- Favor semantic HTML (`button`, `nav`, `main`, etc.).
+- For overlays/modals, ensure backdrop colors use opacity (e.g., `bg-black/70`) and inner containers have `rounded-2xl` and `shadow-2xl` for consistency.
+- Apply `focus:` and `hover:` states; add `focus:outline-none` only when `focus:ring-*` is provided.
+
+## Images & Media 🖼️
+- Use `object-cover` and constrained heights (e.g., `h-64`) for hero images in cards/modals.
+- Add `loading="lazy"` to non-critical images and define meaningful `alt` text.
+- External images (e.g., Unsplash) should have clear keywords; handle `onError` fallback as in [components/LocationModal.tsx](mdc:components/LocationModal.tsx).
+
+## SVG & Map 🗺️
+- Keep the viewBox of the custom map at 800×600 and scale positions consistently.
+- Overlay interactive elements with absolute positioning; ensure `pointer-events` are set appropriately for non-interactive SVG layers.
+
+## CSS Organization
+- If introducing global CSS (e.g., `index.css`), reference it from [index.html](mdc:index.html) and keep utilities-first approach.
+- Do not override Tailwind base styles broadly; scope overrides to components or use additional utility classes.
+

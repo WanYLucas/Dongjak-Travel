@@ -1,0 +1,49 @@
+---
+alwaysApply: true
+description: Coding conventions for TypeScript, React components, naming, control flow, and AI service patterns
+globs: *.ts,*.tsx
+---
+
+# 📐 Coding Conventions
+
+## TypeScript ✅
+- Define domain types in [types.ts](mdc:types.ts) and reuse across components/services.
+- Export interfaces for public shapes; keep internal helper types local to modules when possible.
+- Avoid `any`. Prefer explicit, narrow types.
+
+## React Components ⚛️
+- Use functional components with `React.FC<Props>`.
+- Co-locate simple animations and styles via `<style>` tags inside components when they are not shared.
+- Lift state to the closest common parent only as needed. Preserve the state machine structure in [App.tsx](mdc:App.tsx).
+
+## Naming 🏷️
+- Use descriptive, intention-revealing names. Avoid abbreviations.
+- For booleans, use positive names like `isOpen`, `hasError`.
+- For handlers, use `handleX` prefix (e.g., `handleLanguageSelect`).
+
+## Control Flow & Errors 🚦
+- Prefer guard clauses over deep nesting.
+- Handle error states explicitly in UI. Provide localized fallback messages (see `LANGUAGES` in [constants.ts](mdc:constants.ts)).
+- When calling async services, set UI to a `loading` state and recover to a safe state on failure.
+
+## Internationalization 🌍
+- Fetch localized strings via helper `getText(field)` patterns and default to English.
+- Extend `LANGUAGES` for any newly introduced UI text, including buttons, titles, and helper copy.
+
+## AI Service Patterns 🤖
+- Keep prompts, schemas, and model configuration in [services/geminiService.ts](mdc:services/geminiService.ts).
+- Validate all AI responses against explicit schemas before using them in UI.
+- Ensure per-day recommendation generation remains parallel and failure-tolerant (`Promise.allSettled`).
+
+## Imports & Aliases 📦
+- Use `@/` alias for root-based imports where helpful.
+- Keep import order: external libs → internal modules → local component/styles.
+
+## Accessibility ♿
+- Add `aria-label` to interactive elements without visible labels.
+- Ensure keyboard interactions: ESC to close modals, focus traps when necessary.
+
+## Performance ⚡
+- Debounce/throttle expensive UI updates if added later.
+- Lazy-load heavy subtrees if routing or code-splitting is introduced.
+
