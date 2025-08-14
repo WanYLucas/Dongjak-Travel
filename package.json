@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "ai:autocommit": "chokidar \"**/*\" -i \"node_modules|.git|dist|package-lock.json\" -d 1500 -c \"node scripts/autoCommit.mjs\"",
+    "ai:commit-once": "node scripts/autoCommit.mjs"
   },
   "dependencies": {
     "@google/genai": "^1.11.0",
@@ -15,6 +17,7 @@
   },
   "devDependencies": {
     "@types/node": "^22.14.0",
+    "chokidar-cli": "^3.0.0",
     "typescript": "~5.8.2",
     "vite": "^6.2.0"
   }

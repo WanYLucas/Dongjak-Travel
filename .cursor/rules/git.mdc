@@ -1,0 +1,25 @@
+---
+alwaysApply: true
+description: Git workflow with AI auto-commit, branches, and Conventional Commits
+---
+
+# 🔧 Git + AI Workflow Rules
+
+## Branching
+- Keep `main` stable.
+- Create feature branches as `ai-<feature>` for AI-assisted tasks.
+
+## Auto-Commit 🤖
+- Auto-commit script watches file changes and commits in Korean using Conventional Commits style.
+- Commands:
+  - One-shot commit: `npm run ai:commit-once`
+  - Watch and auto-commit: `npm run ai:autocommit`
+
+## Commit Message Style ✍️
+- Prefer Conventional Commits: `feat|fix|chore|refactor|docs|style: summary`.
+- The auto-commit uses: `chore: 자동 커밋 (AI 작업 감지)` and lists changed files in Korean.
+
+## Pull Requests
+- Push feature branches and open PRs to `main`.
+- Keep PRs small and focused; include a summary of UI changes and screenshots if relevant.
+
